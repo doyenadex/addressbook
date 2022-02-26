@@ -1,12 +1,32 @@
 pipeline {
  
-agent { node { label 'Linux-Demo' } }
+agent { node { label 'master' } }
+tools {
+        maven 'maven3.3.9'
+        jdk 'jdk1.8'
+    }
 stages {
-     stage('Run Ansible playbook') {
+        stage('Code validate') {
             steps {
-                sh 'ansiblePlaybook extras: 'hosts=webservers', inventory: 'lab.ini', playbook: 'deploy.yml''
+                sh 'mvn validate'
             }
         }
-        
+        stage('Code Compile') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+        stage('Code Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+        stage('Code Package') {
+            steps {
+                sh 'mvn package'
+            }
+        }
+ 
+       
     }
 }
